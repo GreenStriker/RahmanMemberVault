@@ -7,6 +7,13 @@
 ##
 ## Get latest from https://github.com/github/gitignore/blob/main/Dotnet.gitignore
 
+## Ignore Visual Studio workspace files
+.vs/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
 # Build results
 [Dd]ebug/
 [Dd]ebugPublic/
@@ -52,3 +59,13 @@ CodeCoverage/
 *.VisualState.xml
 TestResult.xml
 nunit-*.xml
+
+## Logs
+*.log
+
+## EF Core and SQLite database files
+App_Data/*.db
+*.db-journal
+
+## Visual Studio Code
+.vscode/
