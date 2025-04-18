@@ -1,4 +1,6 @@
 using RahmanMemberVault.Api.Extensions;
+using Swashbuckle.AspNetCore.SwaggerGen;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,6 +14,18 @@ builder.Services.AddOpenApi();
 builder.Services
        .AddApplicationLayer()
        .AddInfrastructureLayer(builder.Configuration);
+
+// Add Swagger/OpenAPI support
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo
+    {
+        Title = "RahmanMemberVault API",
+        Version = "v1"
+    });
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
