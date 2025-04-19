@@ -15,8 +15,11 @@ builder.Services.AddControllers();
 builder.Services
        .AddApplicationLayer()
        .AddInfrastructureLayer(builder.Configuration);
+//
 
-// register the spec generator
+builder.Services.AddExceptionHandler<AppExceptionHandler>();
+
+// register the SwaggerGen
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
@@ -46,6 +49,8 @@ if (app.Environment.IsDevelopment())
         c.SwaggerEndpoint("/swagger/v1/swagger.json", "RahmanMemberVault API V1");
     });
 }
+
+app.UseExceptionHandler(_ => { });      
 
 app.UseHttpsRedirection();
 
