@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using RahmanMemberVault.Api.Extensions;
 using RahmanMemberVault.Infrastructure.Data;
@@ -9,15 +10,13 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
 builder.Services.AddControllers();
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-builder.Services.AddOpenApi();
 
 // Application & Infrastructure
 builder.Services
        .AddApplicationLayer()
        .AddInfrastructureLayer(builder.Configuration);
 
-// Add Swagger/OpenAPI support
+// register the spec generator
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
@@ -41,7 +40,11 @@ using (var scope = app.Services.CreateScope())
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    app.MapOpenApi();
+    app.UseSwagger();
+    app.UseSwaggerUI(c =>
+    {
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "RahmanMemberVault API V1");
+    });
 }
 
 app.UseHttpsRedirection();
