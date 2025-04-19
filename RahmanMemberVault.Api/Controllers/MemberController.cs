@@ -67,9 +67,6 @@ namespace RahmanMemberVault.Api.Controllers
             {
                 return NotFound();
             }
-            {
-                return NotFound();
-            }
             return NoContent(); // Return 204 No Content if deletion was successful
         }
     }
