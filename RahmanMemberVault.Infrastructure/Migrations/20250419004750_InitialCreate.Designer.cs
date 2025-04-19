@@ -14,7 +14,7 @@ namespace RahmanMemberVault.Infrastructure.Migrations
     [Migration("20250419004750_InitialCreate")]
     partial class InitialCreate
     {
-        /// <inheritdoc />
+        // <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618

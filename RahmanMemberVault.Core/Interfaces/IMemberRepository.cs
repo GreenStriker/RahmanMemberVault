@@ -10,19 +10,19 @@ namespace RahmanMemberVault.Core.Interfaces
     public interface IMemberRepository
     {
         
-        /// Gets all members.
+        // Gets all members.
         Task<IEnumerable<Member>> GetAllMembersAsync();
         
-        /// Gets a member by ID.
+        // Gets a member by ID.
         Task<Member> GetMemberByIdAsync(int id);
 
-        /// Adds a new member.
+        // Adds a new member.
         Task<Member> AddMemberAsync(Member member);
 
-        /// Updates an existing member.
+        // Updates an existing member.
         Task<Member> UpdateMemberAsync(Member member);
 
-        /// Deletes a member by ID.
+        // Deletes a member by ID.
         Task<bool> DeleteMemberAsync(int id);
     }
 }

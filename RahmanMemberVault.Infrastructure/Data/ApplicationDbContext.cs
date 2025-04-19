@@ -4,7 +4,7 @@ using RahmanMemberVault.Core.Entities;
 namespace RahmanMemberVault.Infrastructure.Data
 {
 
-    /// EF Core database context for the application.
+    // EF Core database context for the application.
     public class ApplicationDbContext : DbContext
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
@@ -12,7 +12,7 @@ namespace RahmanMemberVault.Infrastructure.Data
         {
         }
 
-        /// Gets or sets the Members table.
+        // Gets or sets the Members table.
         public DbSet<Member> Members { get; set; }
 
 

@@ -1,35 +1,35 @@
 ﻿namespace RahmanMemberVault.Core.Entities
 {
 
-    /// Represents a member record in the system.
+    // Represents a member record in the system.
     public class Member
     {
 
-        /// Unique identifier for the member.
+        // Unique identifier for the member.
         public int Id { get; set; }
 
 
-        /// Full name of the member.
+        // Full name of the member.
         public string Name { get; set; } = string.Empty;
 
 
-        /// Email address of the member.
+        // Email address of the member.
         public string Email { get; set; } = string.Empty;
 
 
-        /// Phone number of the member.
+        // Phone number of the member.
         public string PhoneNumber { get; set; } = string.Empty;
 
 
-        /// Date when the member joined.
+        // Date when the member joined.
         public DateTime DateJoined { get; set; }
 
 
-        /// Date when the member record was last updated.
+        // Date when the member record was last updated.
         public DateTime UpdatedOn { get; set; }
 
 
-        /// Indicates whether the member is currently active.
+        // Indicates whether the member is currently active.
         public bool IsActive { get; set; } = true;
     }
 }

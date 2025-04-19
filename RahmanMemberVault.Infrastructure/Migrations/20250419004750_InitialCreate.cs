@@ -5,10 +5,10 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace RahmanMemberVault.Infrastructure.Migrations
 {
-    /// <inheritdoc />
+    // <inheritdoc />
     public partial class InitialCreate : Migration
     {
-        /// <inheritdoc />
+        // <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
@@ -30,7 +30,7 @@ namespace RahmanMemberVault.Infrastructure.Migrations
                 });
         }
 
-        /// <inheritdoc />
+        // <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
