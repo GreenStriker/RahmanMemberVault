@@ -15,14 +15,14 @@ namespace RahmanMemberVault.Core.Interfaces
         
         /// Gets a member by ID.
         Task<Member> GetMemberByIdAsync(int id);
-        
+
         /// Adds a new member.
-        Task AddMemberAsync(Member member);
-        
+        Task<Member> AddMemberAsync(Member member);
+
         /// Updates an existing member.
-        Task UpdateMemberAsync(Member member);
+        Task<Member> UpdateMemberAsync(Member member);
 
         /// Deletes a member by ID.
-        Task DeleteMemberAsync(int id);
+        Task<bool> DeleteMemberAsync(int id);
     }
 }
