@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using RahmanMemberVault.Infrastructure.Data;
+using RahmanMemberVault.Application.Mapping;
 
 namespace RahmanMemberVault.Api.Extensions
 {
@@ -7,6 +8,8 @@ namespace RahmanMemberVault.Api.Extensions
     {
         public static IServiceCollection AddApplicationLayer(this IServiceCollection services)
         {
+            // AutoMapper configuration - scan for profiles in the Application.Mapping assembly
+            services.AddAutoMapper(typeof(MemberMappingProfile).Assembly);
             return services;
         }
         public static IServiceCollection AddInfrastructureLayer(
