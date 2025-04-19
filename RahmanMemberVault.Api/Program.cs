@@ -50,6 +50,13 @@ builder.Services.AddSwaggerGen(c =>
 builder.Host.UseSerilog(); // Use Serilog for logging
 var app = builder.Build();
 
+// ensure App_Data exists on disk
+var dataDir = Path.Combine(builder.Environment.ContentRootPath, "App_Data");
+if (!Directory.Exists(dataDir))
+{
+    Directory.CreateDirectory(dataDir);
+}
+
 // Deploy the database in app statrup from Migration
 using (var scope = app.Services.CreateScope())
 {
