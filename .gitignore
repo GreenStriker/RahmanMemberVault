@@ -63,9 +63,12 @@ nunit-*.xml
 ## Logs
 *.log
 
-## EF Core and SQLite database files
-App_Data/*.db
-*.db-journal
+
 
 ## Visual Studio Code
 .vscode/
+
+## EF Core and SQLite database files
+/RahmanMemberVault.Api/App_Data/*.db-shm
+/RahmanMemberVault.Api/App_Data/*.db
+/RahmanMemberVault.Api/App_Data/*.db-wal
