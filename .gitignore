@@ -70,6 +70,4 @@ nunit-*.xml
 
 ## EF Core and SQLite database files
 /RahmanMemberVault.Api/App_Data/*.db-shm
-/RahmanMemberVault.Api/App_Data/*.db
 /RahmanMemberVault.Api/App_Data/*.db-wal
-/RahmanMemberVault.Api/App_Data/members.db
