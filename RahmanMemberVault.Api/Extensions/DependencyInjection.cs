@@ -1,6 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using RahmanMemberVault.Infrastructure.Data;
 using RahmanMemberVault.Application.Mapping;
+using RahmanMemberVault.Application.Interfaces;
+using RahmanMemberVault.Application.Services;
+using RahmanMemberVault.Core.Interfaces;
+using RahmanMemberVault.Infrastructure.Repositories;
 
 namespace RahmanMemberVault.Api.Extensions
 {
@@ -10,6 +14,10 @@ namespace RahmanMemberVault.Api.Extensions
         {
             // AutoMapper configuration - scan for profiles in the Application.Mapping assembly
             services.AddAutoMapper(typeof(MemberMappingProfile).Assembly);
+
+            // Application services
+            services.AddScoped<IMemberService, MemberService>();
+
             return services;
         }
         public static IServiceCollection AddInfrastructureLayer(
@@ -24,6 +32,8 @@ namespace RahmanMemberVault.Api.Extensions
                 options.UseSqlite($"Data Source={dbPath}");
             });
 
+            // Repository layer
+            services.AddScoped<IMemberRepository, MemberRepository>();
 
             return services;
         }
