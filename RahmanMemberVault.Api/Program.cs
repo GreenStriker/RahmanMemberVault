@@ -1,4 +1,6 @@
+using Microsoft.EntityFrameworkCore;
 using RahmanMemberVault.Api.Extensions;
+using RahmanMemberVault.Infrastructure.Data;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
 
@@ -27,6 +29,14 @@ builder.Services.AddSwaggerGen(c =>
 });
 
 var app = builder.Build();
+
+// Deploy the database in app statrup from Migration
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+    db.Database.Migrate();
+}
+
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
