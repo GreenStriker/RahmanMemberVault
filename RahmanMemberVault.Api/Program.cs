@@ -3,21 +3,37 @@ using Microsoft.EntityFrameworkCore;
 using RahmanMemberVault.Api.Extensions;
 using RahmanMemberVault.Infrastructure.Data;
 using Swashbuckle.AspNetCore.SwaggerGen;
+using Serilog;
 
+
+// Configure Serilog for logging
+Directory.CreateDirectory("ExceptionLogs");
+
+// Show internal Serilog errors in console
+Serilog.Debugging.SelfLog.Enable(msg => Console.WriteLine("SERILOG ERROR: " + msg));
+Log.Logger = new LoggerConfiguration()
+    .WriteTo.Console()
+    .WriteTo.File("ExceptionLogs/logs.txt", rollingInterval: RollingInterval.Day)
+    .CreateLogger();
+Log.Information("Test log at startup"); // Force a log
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
 builder.Services.AddControllers();
 
 // Application & Infrastructure
 builder.Services
        .AddApplicationLayer()
        .AddInfrastructureLayer(builder.Configuration);
-//
 
+// Add AppExceptionHandler
 builder.Services.AddExceptionHandler<AppExceptionHandler>();
+builder.Services.Configure<ExceptionHandlerOptions>(options =>
+{
+    options.AllowStatusCode404Response = true;
+});
+builder.Services.AddProblemDetails();
 
 // register the SwaggerGen
 builder.Services.AddEndpointsApiExplorer();
@@ -30,6 +46,8 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 
+
+builder.Host.UseSerilog(); // Use Serilog for logging
 var app = builder.Build();
 
 // Deploy the database in app statrup from Migration
@@ -50,7 +68,7 @@ if (app.Environment.IsDevelopment())
     });
 }
 
-app.UseExceptionHandler(_ => { });      
+app.UseExceptionHandler();
 
 app.UseHttpsRedirection();
 
