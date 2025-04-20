@@ -21,7 +21,9 @@ namespace RahmanMemberVault.Application.Validators
                 .EmailAddress().WithMessage("A valid email address is required.");
 
             RuleFor(x => x.PhoneNumber) // Validate the PhoneNumber property
-                .NotEmpty().WithMessage("Phone number is required.");
+                .NotEmpty().WithMessage("Phone number is required.")
+                .Matches(@"^\+?[0-9\s\-]{10,20}$")
+                .WithMessage("Phone number must be 10–20 characters and may include spaces or dashes.");
         }
     }
 }
