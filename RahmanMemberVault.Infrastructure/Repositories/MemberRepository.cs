@@ -58,9 +58,15 @@ namespace RahmanMemberVault.Infrastructure.Repositories
             {
                 throw new KeyNotFoundException($"Member with ID {member.Id} was not found.");
             }
-            _dbContext.Members.Update(member);
+            existing.Name = member.Name; // Update properties as needed
+            existing.Email = member.Email; // Update properties as needed
+            existing.PhoneNumber = member.PhoneNumber; // Update properties as needed
+            existing.IsActive = member.IsActive; // Update Active status
+            existing.UpdatedOn = DateTime.UtcNow; // Update the last updated timestamp
+
+            _dbContext.Members.Update(existing);
             await _dbContext.SaveChangesAsync();
-            return member;
+            return existing;
         }
 
         // Deletes a member record by its identifier or returns false if not found.

@@ -20,8 +20,7 @@ namespace RahmanMemberVault.Application.Mapping
                 .ForMember(dest => dest.IsActive, opt => opt.MapFrom(_ => true));
 
             // Update DTO -> Entity
-            CreateMap<UpdateMemberDto, Member>()
-                .ForMember(dest => dest.UpdatedOn, opt => opt.MapFrom(_ => DateTime.UtcNow));
+            CreateMap<UpdateMemberDto, Member>();
         }
     }
 }
