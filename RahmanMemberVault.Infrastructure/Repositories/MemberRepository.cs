@@ -54,7 +54,7 @@ namespace RahmanMemberVault.Infrastructure.Repositories
             // Check for existence using FirstOrDefaultAsync.
             var existing = await _dbContext.Members
                 .FirstOrDefaultAsync(m => m.Id == member.Id);
-            if (existing == null)
+            if (existing == null) // Member not found
             {
                 throw new KeyNotFoundException($"Member with ID {member.Id} was not found.");
             }
