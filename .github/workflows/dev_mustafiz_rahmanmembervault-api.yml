@@ -27,10 +27,8 @@ jobs:
           dotnet build   RahmanMemberVault.sln --configuration Release
 
       - name: Publish Web API
-        run: |
-          dotnet publish RahmanMemberVault.Api/RahmanMemberVault.Api.csproj \
-            --configuration Release \
-            --output ${{ runner.workspace }}/publish
+        run: dotnet publish RahmanMemberVault.Api/RahmanMemberVault.Api.csproj --configuration Release --output ${{ runner.workspace }}/publish
+
 
       - name: Inspect publish folder
         run: |
