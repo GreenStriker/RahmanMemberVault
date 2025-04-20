@@ -5,6 +5,9 @@ using RahmanMemberVault.Application.Interfaces;
 using RahmanMemberVault.Application.Services;
 using RahmanMemberVault.Core.Interfaces;
 using RahmanMemberVault.Infrastructure.Repositories;
+using FluentValidation.AspNetCore;
+using FluentValidation;
+using RahmanMemberVault.Application.Validators;
 
 namespace RahmanMemberVault.Api.Extensions
 {
@@ -17,6 +20,11 @@ namespace RahmanMemberVault.Api.Extensions
 
             // Application services
             services.AddScoped<IMemberService, MemberService>();
+
+            // FluentValidation
+            services.AddFluentValidationAutoValidation();
+            services.AddValidatorsFromAssemblyContaining<CreateMemberDtoValidator>();
+            services.AddValidatorsFromAssemblyContaining<UpdateMemberDtoValidator>();
 
             return services;
         }
