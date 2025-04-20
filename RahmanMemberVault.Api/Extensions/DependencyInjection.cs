@@ -8,6 +8,7 @@ using RahmanMemberVault.Infrastructure.Repositories;
 using FluentValidation.AspNetCore;
 using FluentValidation;
 using RahmanMemberVault.Application.Validators;
+using System;
 
 namespace RahmanMemberVault.Api.Extensions
 {
@@ -29,16 +30,16 @@ namespace RahmanMemberVault.Api.Extensions
             return services;
         }
         public static IServiceCollection AddInfrastructureLayer(
-            this IServiceCollection services, IConfiguration configuration)
+            this IServiceCollection services, IConfiguration configuration, IWebHostEnvironment environment)
         {
-            //Ef Core Sqlite database context
-            services.AddDbContext<ApplicationDbContext>((provider, options) =>
-            {
-                // get the IWebHostEnvironment from DI
-                var env = provider.GetRequiredService<IWebHostEnvironment>();
-                var dbPath = Path.Combine(env.ContentRootPath, "App_Data", "members.db");
-                options.UseSqlite($"Data Source={dbPath}");
-            });
+            // ensure App_Data folder exists
+            var dataDir = Path.Combine(environment.ContentRootPath, "App_Data");
+            Directory.CreateDirectory(dataDir);
+
+            // read the connection string from config
+            var conn = configuration.GetConnectionString("MemberVaultDb");
+            services.AddDbContext<ApplicationDbContext>(opts =>
+                opts.UseSqlite(conn));
 
             // Repository layer
             services.AddScoped<IMemberRepository, MemberRepository>();
