@@ -28,7 +28,7 @@ namespace RahmanMemberVault.Api.Extensions
             bool isKnown = exception is KeyNotFoundException;
 
             // For unexpected errors, generate a tracking ID
-            string trackingId = null;
+            string? trackingId = null;
             if (!isKnown)
             {
                 trackingId = Guid.NewGuid().ToString();
