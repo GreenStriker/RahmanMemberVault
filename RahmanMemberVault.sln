@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.13.35825.156 d17.13
+VisualStudioVersion = 17.13.35825.156
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RahmanMemberVault.Api", "RahmanMemberVault.Api\RahmanMemberVault.Api.csproj", "{EBCA1012-5A55-44C9-8CC8-5032A108947B}"
 EndProject
@@ -10,6 +10,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RahmanMemberVault.Core", "RahmanMemberVault.Core\RahmanMemberVault.Core.csproj", "{CC7F94BD-AAA7-411A-B3B1-451BD3D4A50C}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RahmanMemberVault.Infrastructure", "RahmanMemberVault.Infrastructure\RahmanMemberVault.Infrastructure.csproj", "{372985BB-48F7-43DE-9368-441FA0ACA548}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RahmanMemberVault.Tests.Unit", "RahmanMemberVault.Tests.Unit\RahmanMemberVault.Tests.Unit.csproj", "{F6E4856D-BD70-438C-A222-C839189B3A01}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{372985BB-48F7-43DE-9368-441FA0ACA548}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{372985BB-48F7-43DE-9368-441FA0ACA548}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{372985BB-48F7-43DE-9368-441FA0ACA548}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F6E4856D-BD70-438C-A222-C839189B3A01}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F6E4856D-BD70-438C-A222-C839189B3A01}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F6E4856D-BD70-438C-A222-C839189B3A01}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F6E4856D-BD70-438C-A222-C839189B3A01}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
