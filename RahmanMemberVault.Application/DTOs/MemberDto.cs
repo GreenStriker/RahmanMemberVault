@@ -14,7 +14,6 @@ namespace RahmanMemberVault.Application.DTOs
         public string Email { get; set; } = string.Empty;
         public string PhoneNumber { get; set; } = string.Empty;
         public DateTime DateJoined { get; set; }
-        public DateTime UpdatedOn { get; set; }
         public bool IsActive { get; set; }
     }
 }
