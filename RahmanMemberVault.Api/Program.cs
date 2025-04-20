@@ -9,13 +9,14 @@ using Serilog;
 // Configure Serilog for logging
 Directory.CreateDirectory("ExceptionLogs");
 
-// Show internal Serilog errors in console
-Serilog.Debugging.SelfLog.Enable(msg => Console.WriteLine("SERILOG ERROR: " + msg));
+// Set up Serilog to log to console and file
 Log.Logger = new LoggerConfiguration()
     .WriteTo.Console()
     .WriteTo.File("ExceptionLogs/logs.txt", rollingInterval: RollingInterval.Day)
     .CreateLogger();
-Log.Information("Test log at startup"); // Force a log
+
+Log.Logger.Information("Starting RahmanMemberVault API...");
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -29,6 +30,8 @@ builder.Services
 
 // Add AppExceptionHandler
 builder.Services.AddExceptionHandler<AppExceptionHandler>();
+
+// Configure the exception handler options
 builder.Services.Configure<ExceptionHandlerOptions>(options =>
 {
     options.AllowStatusCode404Response = true;
@@ -65,15 +68,14 @@ using (var scope = app.Services.CreateScope())
 }
 
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+// Enable Swagger UI in all environments
+app.UseSwagger();
+app.UseSwaggerUI(c =>
 {
-    app.UseSwagger();
-    app.UseSwaggerUI(c =>
-    {
-        c.SwaggerEndpoint("/swagger/v1/swagger.json", "RahmanMemberVault API V1");
-    });
-}
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "RahmanMemberVault API V1");
+    // Optionally serve at root
+    // c.RoutePrefix = string.Empty;
+});
 
 app.UseExceptionHandler();
 
