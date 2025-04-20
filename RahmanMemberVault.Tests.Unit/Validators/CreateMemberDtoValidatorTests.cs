@@ -26,6 +26,7 @@ namespace RahmanMemberVault.Tests.Unit.Validators
         [Fact]
         public void Should_Pass_When_ValidDto() // Valid DTO Test
         {
+            // Arrange
             var dto = new CreateMemberDto
             {
                 Name = "Mustafizur",
@@ -33,13 +34,17 @@ namespace RahmanMemberVault.Tests.Unit.Validators
                 PhoneNumber = "+1234567890"
             };
 
+            // Act
             var result = _validator.TestValidate(dto);
+
+            // Assert
             result.ShouldNotHaveAnyValidationErrors();
         }
 
         [Fact]
         public void Should_Fail_When_NameMissing() // Missing Name Test
         {
+            // Arrange
             var dto = new CreateMemberDto
             {
                 Name = string.Empty,
@@ -47,7 +52,10 @@ namespace RahmanMemberVault.Tests.Unit.Validators
                 PhoneNumber = "+1234567890"
             };
 
+            // Act
             var result = _validator.TestValidate(dto);
+
+            // Assert
             result.ShouldHaveValidationErrorFor(x => x.Name)
                   .WithErrorMessage("Name is required.");
         }
@@ -55,6 +63,7 @@ namespace RahmanMemberVault.Tests.Unit.Validators
         [Fact]
         public void Should_Fail_When_NameTooLong() // Name Too Long Test
         {
+            // Arrange
             var longName = new string('A', 101); // 101 characters long
             var dto = new CreateMemberDto
             {
@@ -63,7 +72,10 @@ namespace RahmanMemberVault.Tests.Unit.Validators
                 PhoneNumber = "+1234567890"
             };
 
+            // Act
             var result = _validator.TestValidate(dto);
+
+            // Assert
             result.ShouldHaveValidationErrorFor(x => x.Name)
                   .WithErrorMessage("Name cannot exceed 100 characters.");
         }
@@ -71,6 +83,7 @@ namespace RahmanMemberVault.Tests.Unit.Validators
         [Fact]
         public void Should_Fail_When_EmailInvalid() // Invalid Email Test
         {
+            // Arrange
             var dto = new CreateMemberDto
             {
                 Name = "Mustafizur",
@@ -78,7 +91,10 @@ namespace RahmanMemberVault.Tests.Unit.Validators
                 PhoneNumber = "+1234567890"
             };
 
+            // Act
             var result = _validator.TestValidate(dto);
+
+            // Assert
             result.ShouldHaveValidationErrorFor(x => x.Email)
                   .WithErrorMessage("A valid email address is required.");
         }
@@ -86,6 +102,7 @@ namespace RahmanMemberVault.Tests.Unit.Validators
         [Fact]
         public void Should_Fail_When_PhoneMissing() // Missing Phone Number Test
         {
+            // Arrange
             var dto = new CreateMemberDto
             {
                 Name = "Mustafizur",
@@ -93,7 +110,10 @@ namespace RahmanMemberVault.Tests.Unit.Validators
                 PhoneNumber = string.Empty // Missing phone number
             };
 
+            // Act
             var result = _validator.TestValidate(dto);
+
+            // Assert
             result.ShouldHaveValidationErrorFor(x => x.PhoneNumber)
                   .WithErrorMessage("Phone number is required.");
         }
