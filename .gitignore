@@ -74,3 +74,4 @@ nunit-*.xml
 /RahmanMemberVault.Api/App_Data/members.db
 /RahmanMemberVault.Api/ExceptionLogs/logs20250419.txt
 /RahmanMemberVault.Api/ExceptionLogs/logs20250420.txt
+/RahmanMemberVault.Api/ExceptionLogs/logs20250421.txt
