@@ -63,6 +63,20 @@ namespace RahmanMemberVault.Api.Extensions
                 errorMessage = "An unexpected error occurred. Please contact support with the tracking ID.";
             }
 
+            // If it's our “not found” exception, return 404:
+            if (exception is KeyNotFoundException)
+            {
+                httpContext.Response.StatusCode = StatusCodes.Status404NotFound;
+                var notFoundResponse = new
+                {
+                    error = exception.Message, 
+                    statusCode = httpContext.Response.StatusCode
+                };
+                await httpContext.Response.WriteAsJsonAsync(notFoundResponse, cancellationToken);
+                return true;
+            }
+
+
             // Build response payload
             var response = new
             {
