@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Linq;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Microsoft.VisualStudio.TestPlatform.TestHost;
 using RahmanMemberVault.Api;
 using RahmanMemberVault.Infrastructure.Data;
@@ -15,17 +17,32 @@ namespace RahmanMemberVault.Tests.Integration
     {
         protected override void ConfigureWebHost(IWebHostBuilder builder)
         {
+            // 1) run in a special environment
+            builder.UseEnvironment("IntegrationTests");
+
+            // 2) replace EF Core with InMemory only
             builder.ConfigureServices(services =>
             {
-                // Remove the existing ApplicationDbContext registration
                 var descriptor = services.SingleOrDefault(
-                    d => d.ServiceType == typeof(DbContextOptions<ApplicationDbContext>));
-                if (descriptor != null)
-                    services.Remove(descriptor);
+                    d => d.ServiceType ==
+                        typeof(DbContextOptions<ApplicationDbContext>));
 
-                // Register ApplicationDbContext using in-memory database
+                services.Remove(descriptor);
+
                 services.AddDbContext<ApplicationDbContext>(options =>
-                    options.UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString()));
+                {
+                    options.UseInMemoryDatabase("InMemoryDbForTesting");
+                });
+
+                var sp = services.BuildServiceProvider();
+
+                using (var scope = sp.CreateScope())
+                {
+                    var scopedServices = scope.ServiceProvider;
+                    var db = scopedServices.GetRequiredService<ApplicationDbContext>();
+                    db.Database.EnsureCreated();
+
+                }
             });
         }
     }
