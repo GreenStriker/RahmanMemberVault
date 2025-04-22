@@ -37,9 +37,13 @@ namespace RahmanMemberVault.Api.Extensions
             Directory.CreateDirectory(dataDir);
 
             // read the connection string from config
-            var conn = configuration.GetConnectionString("MemberVaultDb");
-            services.AddDbContext<ApplicationDbContext>(opts =>
-                opts.UseSqlite(conn));
+            if(!environment.IsEnvironment("IntegrationTests"))
+            {
+                var conn = configuration.GetConnectionString("MemberVaultDb");
+                services.AddDbContext<ApplicationDbContext>(opts =>
+                    opts.UseSqlite(conn));
+            }
+
 
             // Repository layer
             services.AddScoped<IMemberRepository, MemberRepository>();

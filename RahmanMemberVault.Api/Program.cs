@@ -47,8 +47,10 @@ builder.Services.AddSwaggerGen(c =>
 var app = builder.Build();
 
 //Apply pending EF Core migrations
-using (var scope = app.Services.CreateScope())
+// only auto‑migrate when *not* running integration tests
+if (!app.Environment.IsEnvironment("IntegrationTests"))
 {
+    using var scope = app.Services.CreateScope();
     var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
     db.Database.Migrate();
 }
@@ -71,3 +73,7 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
+
+// ================================================
+// Allow WebApplicationFactory<Program> to work:
+public partial class Program { }
