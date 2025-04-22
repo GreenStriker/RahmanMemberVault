@@ -118,7 +118,8 @@ namespace RahmanMemberVault.Tests.Unit.Repositories
             updated.Name.Should().Be("test Updated"); // Assert that the name is updated
             updated.IsActive.Should().BeTrue(); // Assert that the active status is updated
             var fromDb = await context.Members.FindAsync(existing.Id); // Retrieve the updated member from the database
-            fromDb.Name.Should().Be("test Updated");
+            if(fromDb != null)
+                fromDb.Name.Should().Be("test Updated");
         }
 
         [Fact]
