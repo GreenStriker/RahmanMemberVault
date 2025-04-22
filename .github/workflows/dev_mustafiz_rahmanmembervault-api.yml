@@ -29,16 +29,12 @@ jobs:
       ###  Run unit tests
       - name: Run Unit Tests
         run: |
-          dotnet test RahmanMemberVault.Tests.Unit/RahmanMemberVault.Tests.Unit.csproj \
-            --configuration Release \
-            --no-build
+          dotnet test RahmanMemberVault.Tests.Unit/RahmanMemberVault.Tests.Unit.csproj  --configuration Release   --no-build
 
       ###   Run integration tests
       - name: Run Integration Tests
         run: |
-          dotnet test RahmanMemberVault.Tests.Integration/RahmanMemberVault.Tests.Integration.csproj \
-            --configuration Release \
-            --no-build
+          dotnet test RahmanMemberVault.Tests.Integration/RahmanMemberVault.Tests.Integration.csproj   --configuration Release  --no-build
 
       - name: dotnet publish
         run: dotnet publish -c Release -o "${{env.DOTNET_ROOT}}/myapp"
