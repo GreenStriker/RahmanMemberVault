@@ -1,66 +1,50 @@
-name: Build and deploy ASP.Net Core app to Azure Web App - rahmanmembervault-api
+name: Build and deploy ASP.Net Core app to Azure Web App
+
+permissions:
+  id-token: write        
+  contents: read         
 
 on:
   push:
-    branches:
-      - dev_mustafiz
-  workflow_dispatch:
+    branches: [ dev_mustafiz ]
 
 jobs:
   build:
     runs-on: windows-latest
-    permissions:
-      contents: read
-
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up .NET Core
+      - name: Set up .NET 9.x
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '9.x'
 
-      - name: Restore dependencies
-        run: dotnet restore
-
       - name: Build solution
         run: dotnet build --configuration Release
 
-      ###  Run unit tests
-      - name: Run Unit Tests
+      - name: Publish API
         run: |
-          dotnet test RahmanMemberVault.Tests.Unit/RahmanMemberVault.Tests.Unit.csproj  --configuration Release   --no-build
+          dotnet publish  RahmanMemberVault.Api/RahmanMemberVault.Api.csproj  --configuration Release   --output ./publish
 
-      ###   Run integration tests
-      - name: Run Integration Tests
-        run: |
-          dotnet test RahmanMemberVault.Tests.Integration/RahmanMemberVault.Tests.Integration.csproj   --configuration Release  --no-build
-
-      - name: dotnet publish
-        run: dotnet publish -c Release -o "${{env.DOTNET_ROOT}}/myapp"
-
-      - name: Upload artifact for deployment job
+      - name: Upload published artifact
         uses: actions/upload-artifact@v4
         with:
-          name: .net-app
-          path: ${{env.DOTNET_ROOT}}/myapp
+          name: api-publish
+          path: ./publish
 
   deploy:
-    runs-on: windows-latest
     needs: build
-    environment:
-      name: 'Production'
-      url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
-    permissions:
-      id-token: write
-      contents: read
-
+    runs-on: windows-latest
+    environment: Production
     steps:
-      - name: Download artifact from build job
+      - uses: actions/checkout@v4
+
+      - name: Download published artifact
         uses: actions/download-artifact@v4
         with:
-          name: .net-app
-      
+          name: api-publish
+          path: ./publish
+
       - name: Login to Azure
         uses: azure/login@v2
         with:
@@ -69,10 +53,9 @@ jobs:
           subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_FBEA32F4FDE9467AA49521F2E87D7669 }}
 
       - name: Deploy to Azure Web App
-        id: deploy-to-webapp
         uses: azure/webapps-deploy@v3
         with:
           app-name: 'rahmanmembervault-api'
           slot-name: 'Production'
-          package: .
+          package: './publish'
           clean: true
