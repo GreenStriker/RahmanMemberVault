@@ -54,13 +54,19 @@ namespace RahmanMemberVault.Infrastructure.Repositories
             // Check for existence using FirstOrDefaultAsync.
             var existing = await _dbContext.Members
                 .FirstOrDefaultAsync(m => m.Id == member.Id);
-            if (existing == null)
+            if (existing == null) // Member not found
             {
                 throw new KeyNotFoundException($"Member with ID {member.Id} was not found.");
             }
-            _dbContext.Members.Update(member);
+            existing.Name = member.Name; // Update properties as needed
+            existing.Email = member.Email; // Update properties as needed
+            existing.PhoneNumber = member.PhoneNumber; // Update properties as needed
+            existing.IsActive = member.IsActive; // Update Active status
+            existing.UpdatedOn = DateTime.UtcNow; // Update the last updated timestamp
+
+            _dbContext.Members.Update(existing);
             await _dbContext.SaveChangesAsync();
-            return member;
+            return existing;
         }
 
         // Deletes a member record by its identifier or returns false if not found.

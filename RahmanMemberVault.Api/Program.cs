@@ -1,41 +1,39 @@
+﻿using System;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Diagnostics;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Serilog;
 using RahmanMemberVault.Api.Extensions;
 using RahmanMemberVault.Infrastructure.Data;
-using Swashbuckle.AspNetCore.SwaggerGen;
-using Serilog;
-
-
-// Configure Serilog for logging
-Directory.CreateDirectory("ExceptionLogs");
-
-// Show internal Serilog errors in console
-Serilog.Debugging.SelfLog.Enable(msg => Console.WriteLine("SERILOG ERROR: " + msg));
-Log.Logger = new LoggerConfiguration()
-    .WriteTo.Console()
-    .WriteTo.File("ExceptionLogs/logs.txt", rollingInterval: RollingInterval.Day)
-    .CreateLogger();
-Log.Information("Test log at startup"); // Force a log
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+// Ensure log folder exists 
+Directory.CreateDirectory("ExceptionLogs");
+
+//Configure Serilog from appsettings.json
+Log.Logger = new LoggerConfiguration()
+    .ReadFrom.Configuration(builder.Configuration)
+    .CreateLogger();
+builder.Host.UseSerilog();
+
+//Add framework services
 builder.Services.AddControllers();
 
-// Application & Infrastructure
+//Register Clean‑Architecture layers
 builder.Services
-       .AddApplicationLayer()
-       .AddInfrastructureLayer(builder.Configuration);
+    .AddApplicationLayer()
+    .AddInfrastructureLayer(builder.Configuration, builder.Environment);
 
-// Add AppExceptionHandler
+//Global exception handling
 builder.Services.AddExceptionHandler<AppExceptionHandler>();
-builder.Services.Configure<ExceptionHandlerOptions>(options =>
-{
-    options.AllowStatusCode404Response = true;
-});
+builder.Services.Configure<ExceptionHandlerOptions>(
+    builder.Configuration.GetSection("ExceptionHandlerOptions"));
 builder.Services.AddProblemDetails();
 
-// register the SwaggerGen
+//Swagger/OpenAPI (enabled in all environments)
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
@@ -46,34 +44,36 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 
-
-builder.Host.UseSerilog(); // Use Serilog for logging
 var app = builder.Build();
 
-// Deploy the database in app statrup from Migration
-using (var scope = app.Services.CreateScope())
+//Apply pending EF Core migrations
+// only auto‑migrate when *not* running integration tests
+if (!app.Environment.IsEnvironment("IntegrationTests"))
 {
+    using var scope = app.Services.CreateScope();
     var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
     db.Database.Migrate();
 }
 
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+// Enable Swagger UI in all environments
+app.UseSwagger();
+app.UseSwaggerUI(c =>
 {
-    app.UseSwagger();
-    app.UseSwaggerUI(c =>
-    {
-        c.SwaggerEndpoint("/swagger/v1/swagger.json", "RahmanMemberVault API V1");
-    });
-}
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "RahmanMemberVault API V1");
+    c.RoutePrefix = string.Empty;// Serve at root
+});
 
+// global exception handler
 app.UseExceptionHandler();
 
+// standard middleware
 app.UseHttpsRedirection();
-
 app.UseAuthorization();
-
 app.MapControllers();
 
 app.Run();
+
+// ================================================
+// Allow WebApplicationFactory<Program> to work:
+public partial class Program { }

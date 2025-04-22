@@ -1,0 +1,61 @@
+name: Build and deploy ASP.Net Core app to Azure Web App
+
+permissions:
+  id-token: write        
+  contents: read         
+
+on:
+  push:
+    branches: [ dev_mustafiz ]
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up .NET 9.x
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '9.x'
+
+      - name: Build solution
+        run: dotnet build --configuration Release
+
+      - name: Publish API
+        run: |
+          dotnet publish  RahmanMemberVault.Api/RahmanMemberVault.Api.csproj  --configuration Release   --output ./publish
+
+      - name: Upload published artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: api-publish
+          path: ./publish
+
+  deploy:
+    needs: build
+    runs-on: windows-latest
+    environment: Production
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download published artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: api-publish
+          path: ./publish
+
+      - name: Login to Azure
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_5C65ABF0753E4BFE8FE331D08D20076F }}
+          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_B37DD792DF8442FE86DCA690F425BD47 }}
+          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_FBEA32F4FDE9467AA49521F2E87D7669 }}
+
+      - name: Deploy to Azure Web App
+        uses: azure/webapps-deploy@v3
+        with:
+          app-name: 'rahmanmembervault-api'
+          slot-name: 'Production'
+          package: './publish'
+          clean: true

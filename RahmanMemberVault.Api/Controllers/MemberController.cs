@@ -9,7 +9,7 @@ namespace RahmanMemberVault.Api.Controllers
     // API controller for managing Member resources.
     // Provides endpoints to create, read, update, and delete members.
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/v1/[controller]")]
     public class MemberController : ControllerBase
     {
         private readonly IMemberService _service;
@@ -64,9 +64,6 @@ namespace RahmanMemberVault.Api.Controllers
         {
             bool removed = await _service.DeleteMemberAsync(id);
             if (!removed) // Check if the deletion was successful
-            {
-                return NotFound();
-            }
             {
                 return NotFound();
             }
