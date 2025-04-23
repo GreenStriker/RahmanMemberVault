@@ -16,6 +16,7 @@ RahmanMemberVault is a clean‑architecture ASP.NET Core 9.0 service that provid
 - **Clarity**: Swagger UI makes it trivial for front‑end developers or third‑party integrators to explore and test endpoints.  
 - **Supportability**: Global exception handling emits user‑friendly errors and tracking IDs, so issues can be diagnosed quickly.  
 - **Ease of Deployment**: GitHub Actions CI/CD pipeline automates building, testing, and deploying to Azure Web Apps.  
+- **Validation**: New and updated member emails must be unique. Attempts to create or change to an email that’s already registered will return 400 Bad Request with a clear message.  
 
 ## 🛠️ Getting Started
 
@@ -48,8 +49,8 @@ The API will be available at `https://localhost:7118/` or `http://localhost:5184
 | ------ | ------------------------- | ----------------------------- |
 | GET    | `/api/v1/member`          | Retrieve all members          |
 | GET    | `/api/v1/member/{id}`     | Retrieve member by ID         |
-| POST   | `/api/v1/member`          | Create a new member           |
-| PUT    | `/api/v1/member/{id}`     | Update an existing member     |
+| POST   | `/api/v1/member`          | Create a new member<br>**400** if `email` is already in use  |
+| PUT    | `/api/v1/member/{id}`     | Update an existing member<br>**400** if `email` is already in use  |
 | DELETE | `/api/v1/member/{id}`     | Delete a member               |
 
 **Example**: Create a member  
