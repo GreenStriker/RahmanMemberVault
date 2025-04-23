@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using RahmanMemberVault.Core.Entities;
@@ -27,42 +28,51 @@ namespace RahmanMemberVault.Infrastructure.Repositories
         }
 
         // Retrieves a single member by its unique identifier or throws if not found.
-        // Uses FirstOrDefaultAsync for lookup.
         public async Task<Member> GetMemberByIdAsync(int id)
         {
             var member = await _dbContext.Members
                 .AsNoTracking()
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (member == null)
-            {
                 throw new KeyNotFoundException($"Member with ID {id} was not found.");
-            }
+
             return member;
         }
 
-        // Adds a new member to the database and returns the created entity.
+        // Adds a new member to the database, unless the email is already taken.
         public async Task<Member> AddMemberAsync(Member member)
         {
+            // ◼ Duplicate‐email check
+            var emailTaken = await _dbContext.Members
+                .AnyAsync(m => m.Email == member.Email);
+            if (emailTaken)
+                throw new InvalidOperationException($"Email '{member.Email}' is already in use.");
+
             var entry = await _dbContext.Members.AddAsync(member);
             await _dbContext.SaveChangesAsync();
             return entry.Entity;
         }
 
-        // Updates an existing member record in the database and returns the updated entity.
+        // Updates an existing member, unless the new email conflicts with another record.
         public async Task<Member> UpdateMemberAsync(Member member)
         {
-            // Check for existence using FirstOrDefaultAsync.
             var existing = await _dbContext.Members
                 .FirstOrDefaultAsync(m => m.Id == member.Id);
-            if (existing == null) // Member not found
-            {
+            if (existing == null)
                 throw new KeyNotFoundException($"Member with ID {member.Id} was not found.");
-            }
-            existing.Name = member.Name; // Update properties as needed
-            existing.Email = member.Email; // Update properties as needed
-            existing.PhoneNumber = member.PhoneNumber; // Update properties as needed
-            existing.IsActive = member.IsActive; // Update Active status
-            existing.UpdatedOn = DateTime.UtcNow; // Update the last updated timestamp
+
+            // ◼ Duplicate‐email check (exclude self)
+            var emailTaken = await _dbContext.Members
+                .AnyAsync(m => m.Email == member.Email && m.Id != member.Id);
+            if (emailTaken)
+                throw new InvalidOperationException($"Email '{member.Email}' is already in use.");
+
+            // Apply updates
+            existing.Name = member.Name;
+            existing.Email = member.Email;
+            existing.PhoneNumber = member.PhoneNumber;
+            existing.IsActive = member.IsActive;
+            existing.UpdatedOn = DateTime.UtcNow;
 
             _dbContext.Members.Update(existing);
             await _dbContext.SaveChangesAsync();
@@ -72,13 +82,11 @@ namespace RahmanMemberVault.Infrastructure.Repositories
         // Deletes a member record by its identifier or returns false if not found.
         public async Task<bool> DeleteMemberAsync(int id)
         {
-            // Use FirstOrDefaultAsync to find the entity.
             var member = await _dbContext.Members
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (member == null)
-            {
                 return false;
-            }
+
             _dbContext.Members.Remove(member);
             await _dbContext.SaveChangesAsync();
             return true;

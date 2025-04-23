@@ -71,7 +71,7 @@ A `CreateMemberDto` object:
 
 **Validation Rules**  
 - `name`: non-empty, max length 100  
-- `email`: valid email format  
+- `email`: valid email format, must be unique  
 - `phoneNumber`: digits only, 10–20 characters and may include spaces or dashes
 
 **Responses**  
@@ -82,6 +82,15 @@ A `CreateMemberDto` object:
   {
     "errors": {
       "Email": ["Email must be a valid email address."]
+    },
+    "statusCode": 400
+  }
+  ```
+  - **Duplicate email**  
+  ```json
+  {
+    "errors": {
+      "Email": ["The email 'john.doe@example.com' is already in use."]
     },
     "statusCode": 400
   }
@@ -112,11 +121,11 @@ An `UpdateMemberDto` object:
 
 **Validation & Behavior**  
 - ID in URL must match `id` in body or returns 400.  
-- Same validation rules as create.  
+- Same validation rules as create, including unique email.  
 
 **Responses**  
 - **200 OK**: Returns updated `MemberDto`.  
-- **400 Bad Request**: ID mismatch or validation errors.  
+- **400 Bad Request**: ID mismatch, Duplicate email or validation errors.  
 - **404 Not Found**: Member not found.
 
 ---
