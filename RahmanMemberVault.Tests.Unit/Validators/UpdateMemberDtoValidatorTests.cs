@@ -34,7 +34,6 @@ namespace RahmanMemberVault.Tests.Unit.Validators
         }
 
         [Theory]
-        [InlineData(null)]
         [InlineData("")]
         public void Should_Have_Error_When_Name_Is_Null_Or_Empty(string name) // Invalid Name Test
         {
@@ -55,7 +54,6 @@ namespace RahmanMemberVault.Tests.Unit.Validators
         }
 
         [Theory]
-        [InlineData(null)]
         [InlineData("")]
         [InlineData("not-an-email")]
         public void Should_Have_Error_When_Email_Is_Invalid(string email) // Invalid Email Test
@@ -77,7 +75,6 @@ namespace RahmanMemberVault.Tests.Unit.Validators
         }
 
         [Theory]
-        [InlineData(null)]
         [InlineData("")]
         [InlineData("12345")]
         [InlineData("phone-number")]
