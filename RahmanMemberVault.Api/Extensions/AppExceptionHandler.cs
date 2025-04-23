@@ -5,8 +5,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using RahmanMemberVault.Api.Extensions;
 
 namespace RahmanMemberVault.Api.Extensions
 {
@@ -24,77 +24,45 @@ namespace RahmanMemberVault.Api.Extensions
 
         public async ValueTask<bool> TryHandleAsync(HttpContext httpContext, Exception exception, CancellationToken cancellationToken)
         {
-            // Determine if this is a known, user-friendly exception
-            bool isKnown = exception is KeyNotFoundException;
+            // Decide status based on exception type
+            int statusCode;
+            if (exception is KeyNotFoundException) statusCode = StatusCodes.Status404NotFound;
+            else if (exception is InvalidOperationException) statusCode = StatusCodes.Status400BadRequest;
+            else statusCode = StatusCodes.Status500InternalServerError;
 
-            // For unexpected errors, generate a tracking ID
-            string? trackingId = null;
-            if (!isKnown)
-            {
-                trackingId = Guid.NewGuid().ToString();
-            }
+            // Generate tracking ID only for truly unexpected (500) errors
+            string? trackingId = statusCode == StatusCodes.Status500InternalServerError
+                ? Guid.NewGuid().ToString()
+                : null;
 
-            // Log the exception with tracking ID for diagnostics
-            if (isKnown)
-            {
-                _logger.LogWarning(exception, "Handled exception: {Message}", exception.Message);
-            }
-            else
-            {
+            // Log appropriately
+            if (statusCode == StatusCodes.Status500InternalServerError)
                 _logger.LogError(exception, "Unexpected error occurred. Tracking ID: {TrackingId}", trackingId);
-            }
+            else
+                _logger.LogWarning(exception, "Handled exception ({StatusCode}): {Message}", statusCode, exception.Message);
 
             // Prepare response
             httpContext.Response.ContentType = "application/json";
-            httpContext.Response.StatusCode = (int)StatusCodes.Status500InternalServerError;
+            httpContext.Response.StatusCode = statusCode;
 
-            string errorMessage;
-            // Set error message based on exception type and environment
-            if (isKnown)
-            {
-                errorMessage = exception.Message;
-            }
-            else if (_env.IsDevelopment())  
-            {
-                errorMessage = exception.Message;
-            }
-            else
-            {
-                errorMessage = "An unexpected error occurred. Please contact support with the tracking ID.";
-            }
-
-            // If it's our “not found” exception, return 404:
-            if (exception is KeyNotFoundException)
-            {
-                httpContext.Response.StatusCode = StatusCodes.Status404NotFound;
-                var notFoundResponse = new
-                {
-                    error = exception.Message, 
-                    statusCode = httpContext.Response.StatusCode
-                };
-                await httpContext.Response.WriteAsJsonAsync(notFoundResponse, cancellationToken);
-                return true;
-            }
-
-
-            // Build response payload
+            // Build the body
             var response = new
             {
-                error = errorMessage,
-                trackingId,
-                stackTrace = (_env.IsDevelopment() && !isKnown) ? exception.StackTrace : null,
-                statusCode = httpContext.Response.StatusCode
+                error = exception.Message,
+                trackingId,                                                    // null unless 500
+                stackTrace = (_env.IsDevelopment() && statusCode == 500)      // only include stack on 500 in dev
+                                ? exception.StackTrace
+                                : null,
+                statusCode
             };
 
-            // Serialize response to JSON
             var jsonOptions = new JsonSerializerOptions
             {
-                PropertyNamingPolicy = JsonNamingPolicy.CamelCase, // Use camel case for JSON properties
-                DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull // Ignore null properties
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull
             };
 
-            var json = JsonSerializer.Serialize(response, jsonOptions);
-            await httpContext.Response.WriteAsync(json, cancellationToken); // Write JSON response
+            await httpContext.Response.WriteAsync(JsonSerializer.Serialize(response, jsonOptions), cancellationToken);
             return true;
         }
     }

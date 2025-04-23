@@ -33,7 +33,7 @@ namespace RahmanMemberVault.Tests.Integration
         public async Task CreateAndRetrieveMember_Succeeds()
         {
             // Create
-            var createDto = new CreateMemberDto { Name = "Test Case 1", Email = "test@test.com", PhoneNumber = "1234567890" };
+            var createDto = new CreateMemberDto { Name = "Test Case 1", Email = "test1@test.com", PhoneNumber = "1234567890" };
             var createResponse = await _client.PostAsJsonAsync("/api/v1/member", createDto);
             createResponse.StatusCode.Should().Be(HttpStatusCode.Created);
             var location = createResponse.Headers.Location;
@@ -57,7 +57,7 @@ namespace RahmanMemberVault.Tests.Integration
         public async Task Delete_Returns204_WhenExists()
         {
             // Create
-            var createDto = new CreateMemberDto { Name = "Test Case 3", Email = "test@test.com", PhoneNumber = "1234567890" };
+            var createDto = new CreateMemberDto { Name = "Test Case 3", Email = "test3@test.com", PhoneNumber = "1234567890" };
             var createResponse = await _client.PostAsJsonAsync("/api/v1/member", createDto);
             var created = await createResponse.Content.ReadFromJsonAsync<MemberDto>();
 
@@ -78,7 +78,7 @@ namespace RahmanMemberVault.Tests.Integration
         [Fact]
         public async Task Update_Returns404_WhenMissing()
         {
-            var updateDto = new UpdateMemberDto { Id = 1234, Name = "Test Case 4", Email = "test@test.com", PhoneNumber = "1234567890" };
+            var updateDto = new UpdateMemberDto { Id = 1234, Name = "Test Case 4", Email = "test4@test.com", PhoneNumber = "1234567890" };
             var response = await _client.PutAsJsonAsync($"/api/member/{updateDto.Id}", updateDto);
             response.StatusCode.Should().Be(HttpStatusCode.NotFound);
         }
@@ -87,12 +87,12 @@ namespace RahmanMemberVault.Tests.Integration
         public async Task Update_PersistsChanges_WhenValid()
         {
             // Create
-            var createDto = new CreateMemberDto { Name = "Test Case 5", Email = "test@test.com", PhoneNumber = "1234567890" };
+            var createDto = new CreateMemberDto { Name = "Test Case 5", Email = "test5@test.com", PhoneNumber = "1234567890" };
             var createResponse = await _client.PostAsJsonAsync("/api/v1/member", createDto);
             var created = await createResponse.Content.ReadFromJsonAsync<MemberDto>();
 
             // Update
-            var updateDto = new UpdateMemberDto { Id = created.Id, Name = "Update_Test", Email = "test@test.com", PhoneNumber = "1234567890" };
+            var updateDto = new UpdateMemberDto { Id = created.Id, Name = "Update_Test", Email = "test5@test.com", PhoneNumber = "1234567890" };
             var updateResponse = await _client.PutAsJsonAsync($"/api/v1/member/{created.Id}", updateDto);
             updateResponse.StatusCode.Should().Be(HttpStatusCode.OK);
 
