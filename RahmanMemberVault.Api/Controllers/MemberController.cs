@@ -24,6 +24,7 @@ namespace RahmanMemberVault.Api.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<MemberDto>>> GetAll()
         {
+            //throw new System.NullReferenceException("This is a test exception"); // Simulate an error for testing purposes
             var members = await _service.GetAllMembersAsync();
             return Ok(members); // Return 200 OK with the list of members
         }

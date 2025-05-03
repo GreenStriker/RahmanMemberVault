@@ -20,7 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\RahmanMemberVault.Core\RahmanMemberVault.Core.csproj" />
+    <ProjectReference Include="..\RahmanMemberVault.Application\RahmanMemberVault.Application.csproj" />
   </ItemGroup>
 
 </Project>

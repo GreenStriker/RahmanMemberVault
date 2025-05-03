@@ -21,7 +21,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\RahmanMemberVault.Application\RahmanMemberVault.Application.csproj" />
     <ProjectReference Include="..\RahmanMemberVault.Infrastructure\RahmanMemberVault.Infrastructure.csproj" />
   </ItemGroup>
 
