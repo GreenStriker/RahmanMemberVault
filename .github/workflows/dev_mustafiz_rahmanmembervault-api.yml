@@ -19,12 +19,21 @@ jobs:
         with:
           dotnet-version: '9.x'
 
+      - name: Restore dependencies
+        run: dotnet restore
+
       - name: Build solution
         run: dotnet build --configuration Release
 
+      - name: Run unit tests
+        run: dotnet test RahmanMemberVault.Tests.Unit/RahmanMemberVault.Tests.Unit.csproj --configuration Release --no-build --logger trx
+
+      - name: Run integration tests
+        run: dotnet test RahmanMemberVault.Tests.Integration/RahmanMemberVault.Tests.Integration.csproj --configuration Release --no-build --logger trx
+
       - name: Publish API
         run: |
-          dotnet publish  RahmanMemberVault.Api/RahmanMemberVault.Api.csproj  --configuration Release   --output ./publish
+          dotnet publish RahmanMemberVault.Api/RahmanMemberVault.Api.csproj --configuration Release --output ./publish
 
       - name: Upload published artifact
         uses: actions/upload-artifact@v4
