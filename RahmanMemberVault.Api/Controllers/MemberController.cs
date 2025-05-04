@@ -66,7 +66,7 @@ namespace RahmanMemberVault.Api.Controllers
             bool removed = await _service.DeleteMemberAsync(id);
             if (!removed) // Check if the deletion was successful
             {
-                return NotFound();
+                throw new KeyNotFoundException($"Member with ID {id} was not found."); // Return 404 Not Found if the member does not exist
             }
             return NoContent(); // Return 204 No Content if deletion was successful
         }
