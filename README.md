@@ -64,7 +64,7 @@ curl -X POST https://localhost:7118/api/v1/member   -H "Content-Type: applicatio
 
 
 ## Deployment
-CI/CD with GitHub Actions automates build, test, and deployment on pushes to `master`. Artifacts are deployed to your Azure Web App named `rahmanmembervault-api` with zero‑touch rollback capabilities.
+CI/CD with GitHub Actions automates build, test, and deployment on pushes to `master`. Artifacts are deployed to your Azure Web App named `rahmanmembervault-api` with zero‑touch rollback capabilities. Feel free to test our APIs in [Cloud-Hosting](https://rahmanmembervault-api-djbeesftg0dmb6es.canadacentral-01.azurewebsites.net/)
 
 ## Support & Troubleshooting
 - Check structured logs at `ExceptionLogs/logs.txt` (daily files) for raw errors and tracking IDs.    
